@@ -45,14 +45,14 @@ class FullyConnectedRegularized(nn.Module):
         return y
     
     
-def build_model(model_name, input_size, num_classes):
+def build_model(model_name):
     model = None
 
     if(model_name == "FC"):
-        model = FullyConnected(input_size, num_classes)
+        model = FullyConnected(1 * 28 * 28, 10)
 
     elif(model_name == "FCRreg"):
-        model = FullyConnectedRegularized(input_size, num_classes, 1e-3)
+        model = FullyConnectedRegularized(1 * 28 * 28, 10, 1e-3)
         
     else:
         raise NotImplementedError("Unknown model {}".format(model_name))

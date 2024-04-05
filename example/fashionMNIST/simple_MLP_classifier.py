@@ -59,7 +59,7 @@ class SimpleMLPClassifier(JAWTrainer):
 def main(args :  dict) -> None:
     # Training definition
     train_loader, val_loader, test_loader = load_dataset_FashionMNIST_with_standardization("dataset/")
-    model : torch.nn.Module = build_model(args["model"], args["inputs"], args["classes"])
+    model : torch.nn.Module = build_model(args["model"])
     loss : torch.nn.Module = loss_name_to_class(args["loss"])
 
     MNIST_training : SimpleMLPClassifier = SimpleMLPClassifier(model=model,
@@ -83,22 +83,6 @@ if __name__ == "__main__":
         type=int,
         help="Number of training epoch",
         default=None,
-        required=True
-    )
-
-    parser.add_argument(
-        "--inputs",
-        type=int,
-        help="Number of input",
-        default=1 * 28 * 28,
-        required=True
-    )
-
-    parser.add_argument(
-        "--classes",
-        type=int,
-        help="total number of possible classes",
-        default=10,
         required=True
     )
 
