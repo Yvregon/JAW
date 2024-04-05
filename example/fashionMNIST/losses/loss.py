@@ -15,9 +15,9 @@ class RelativeL1(nn.Module):
 
     def forward(self, input, target):
 
-        base = target + self.eps
+        base = target.sum() + self.eps
 
-        return self.criterion(input/base, target/base)
+        return self.criterion(input.sum()/base, target.sum()/base)
     
     
 class RelativeL2(nn.Module):
@@ -31,9 +31,9 @@ class RelativeL2(nn.Module):
 
     def forward(self, input, target):
 
-        base = target + self.eps
+        base = target.sum() + self.eps
 
-        return self.criterion(input/base, target/base)
+        return self.criterion(input.sum()/base, target.sum()/base)
     
     
 def loss_name_to_class(loss_name : str):
