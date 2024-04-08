@@ -13,8 +13,31 @@ from jaw.utils.computation import get_device
 
 
 class SimpleMLPClassifier(JAWTrainer):
+    """Typical example implementation of a JAWTrainer. We want train a mini classifier with the fashion MNIST dataset (https://github.com/zalandoresearch/fashion-mnist).
+
+    Here we want be able to launch a training with our previously written classes (dataloader, models, losses, training and evaluation processes).
+
+    .. note::
+
+       Here we only use the necessary methods for implement a JAWTrainer, but you are free to declare new parameters.
+
+    """
 
     def launch_training(self, epochs : int, device : torch.device, logdir : str, prefix : str) -> None:
+        """Method where you define your custom training workflow.
+
+        :param epochs: Number of total training complete epochs.
+        :type epochs: int.
+        :param device: Pytorch device used for this training.
+        :type device: torch.device.
+        :param logdir: The name of the directory where your models and training info will be saved.
+        :type logdir: str.
+        :param prefix: Prefix of the training saving directory.
+        :type prefix: str.
+        
+        :returns:  None.
+
+        """
 
         # Create the directory "./logs" if it does not exist
         top_logdir = "./logs"
@@ -23,7 +46,7 @@ class SimpleMLPClassifier(JAWTrainer):
 
         logdir = generate_unique_logpath(top_logdir, prefix)
         print("Logging to {}".format(logdir))
-        # -> Prints out     Logging to   ./logs/simple_fully_fused_MLP_x
+        # -> Prints out     Logging to   ./logs/simple_MLP_classifier_X
         if not os.path.exists(logdir):
             os.mkdir(logdir)
         
@@ -31,6 +54,7 @@ class SimpleMLPClassifier(JAWTrainer):
         optimizer = torch.optim.Adam(self.model.parameters())
 
         self.model.to(device)
+        # We only keeping the best model (depends of the validation loss)
         checkpoint = ModelCheckpoint(logdir + "/best_model.pt", self.model)
 
         tensorboard_writer = SummaryWriter(log_dir=logdir)
@@ -43,12 +67,17 @@ class SimpleMLPClassifier(JAWTrainer):
 
             print(" Validation : Loss : {:.4f}, Acc : {:.4f}".format(val_loss, val_acc))
 
+            # Check if the current model is better than the previous best.
             checkpoint.update(val_loss)
+
+            # Add the score of the training and validation loss and accuracy inside the tensorboard logs. You can decide to add more information
+            # or keep only losses (it doesn't make sense to show the accuracy of a regression model).
             tensorboard_writer.add_scalar("metrics/train_loss", train_loss, epoch)
             tensorboard_writer.add_scalar("metrics/train_acc", train_acc, epoch)
             tensorboard_writer.add_scalar("metrics/val_loss", val_loss, epoch)
             tensorboard_writer.add_scalar("metrics/val_acc", val_acc, epoch)
 
+        # Write the summary file
         summary_text = self.get_summary_text(optimizer)
         summary_file = open(logdir + "/summary.txt", "w")
         summary_file.write(summary_text)
@@ -58,7 +87,14 @@ class SimpleMLPClassifier(JAWTrainer):
 
 
 def main(args :  dict) -> None:
-    # Training definition
+    """Training definition. It's here where we give our custom classes at our previous written :func: `launch_training`.
+
+        :param args: Argument given in the command line.
+        :type args: dict.
+        
+        :returns:  None.
+
+        """
     train_loader, val_loader, test_loader = load_dataset_FashionMNIST_with_standardization("dataset/")
     model : torch.nn.Module = build_model(args["model"])
     loss : torch.nn.Module = loss_name_to_class(args["loss"])
