@@ -7,8 +7,6 @@ import torch.utils.data.dataset
 from types import FunctionType
 import sys
 from datetime import date, datetime
-import argparse
-from jaw.utils.tracking import ModelCheckpoint
 
 
 class JAWTrainer(ABC):

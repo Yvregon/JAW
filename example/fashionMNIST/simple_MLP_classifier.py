@@ -9,8 +9,9 @@ from losses.loss import *
 from data_preprocessing.MNIST_dataset import *
 from training import evaluation, train
 from jaw.utils.tracking import generate_unique_logpath
+from jaw.utils.computation import get_device
 
-# TODO
+
 class SimpleMLPClassifier(JAWTrainer):
 
     def launch_training(self, epochs : int, device : torch.device, logdir : str, prefix : str) -> None:
@@ -71,7 +72,8 @@ def main(args :  dict) -> None:
                                                                eval_func=evaluation.test,
                                                                )
     
-    MNIST_training.launch_training(args["epochs"], torch.device(args["device"]), args["logdir"], args["prefix"])
+
+    MNIST_training.launch_training(args["epochs"], get_device(), args["logdir"], args["prefix"])
 
 
 if __name__ == "__main__":
@@ -100,13 +102,6 @@ if __name__ == "__main__":
         help="Choose between FC (Fully Connected) and FCReg (Regularized).",
         action="store",
         required=True,
-    )
-
-    parser.add_argument(
-        "--device",
-        type=int,
-        default=0,
-        required=False,
     )
 
     parser.add_argument(
