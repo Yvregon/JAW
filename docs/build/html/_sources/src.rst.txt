@@ -1,0 +1,13 @@
+src namespace
+=============
+
+.. py:module:: src
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   src.example
+   src.jaw

@@ -1,0 +1,18 @@
+src.example.fashionMNIST.losses package
+=======================================
+
+.. automodule:: src.example.fashionMNIST.losses
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+src.example.fashionMNIST.losses.loss module
+-------------------------------------------
+
+.. automodule:: src.example.fashionMNIST.losses.loss
+   :members:
+   :undoc-members:
+   :show-inheritance:

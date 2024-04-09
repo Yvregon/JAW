@@ -1,0 +1,29 @@
+src.example.fashionMNIST package
+================================
+
+.. automodule:: src.example.fashionMNIST
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   src.example.fashionMNIST.data_preprocessing
+   src.example.fashionMNIST.losses
+   src.example.fashionMNIST.models
+   src.example.fashionMNIST.training
+
+Submodules
+----------
+
+src.example.fashionMNIST.simple\_MLP\_classifier module
+-------------------------------------------------------
+
+.. automodule:: src.example.fashionMNIST.simple_MLP_classifier
+   :members:
+   :undoc-members:
+   :show-inheritance:

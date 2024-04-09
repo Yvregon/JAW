@@ -1,0 +1,15 @@
+src.example package
+===================
+
+.. automodule:: src.example
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   src.example.fashionMNIST
