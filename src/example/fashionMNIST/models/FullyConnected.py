@@ -51,7 +51,7 @@ def build_model(model_name):
     if(model_name == "FC"):
         model = FullyConnected(1 * 28 * 28, 10)
 
-    elif(model_name == "FCRreg"):
+    elif(model_name == "FCReg"):
         model = FullyConnectedRegularized(1 * 28 * 28, 10, 1e-3)
         
     else:

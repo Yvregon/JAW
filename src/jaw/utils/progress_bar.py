@@ -21,11 +21,11 @@ def progress_bar(current: int, total: int, msg: str = None):
 
     .. note::
 
-       Call this function inside the :func: `train` function. Example :
+       Call this function inside the :func: `test` function. Example :
 
        .. code-block:: python
 
-        def train(model, loader, f_loss, optimizer, device):
+        def test(model, loader, f_loss, optimizer, device):
             
             ...
 
@@ -45,7 +45,7 @@ def progress_bar(current: int, total: int, msg: str = None):
                 correct += (predicted_targets == targets).sum().item()
 
                 progress_bar(i, len(loader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
-                            % (loss/(loss+1), 100.*correct/N, correct, N))
+                         % (tot_loss/(i+1), 100.*correct/N, correct, N))
 
             return tot_loss/N, correct/N
 

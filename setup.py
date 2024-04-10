@@ -7,7 +7,10 @@ setup(name='jaw',
       author='Quentin Duupré',
       author_email='quentin.mathias.dupre@gmail.com',
       description='Just Another (Pytorch) Wrapper',
-      packages=find_packages(),
+      packages=find_packages(
+          where='src'
+      ),
+      package_dir={"": "src"},
       long_description=open('README.md').read(),
       zip_safe=False,
     )

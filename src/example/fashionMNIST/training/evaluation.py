@@ -1,5 +1,5 @@
 import torch
-
+from jaw.utils.progress_bar import progress_bar
 
 def test(model, loader, f_loss, device):
     """
@@ -50,5 +50,8 @@ def test(model, loader, f_loss, device):
             # we can compute the label by argmaxing directly the scores
             predicted_targets = outputs.argmax(dim=1)
             correct += (predicted_targets == targets).sum().item()
+            
+            progress_bar(i, len(loader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
+                         % (tot_loss/(i+1), 100.*correct/N, correct, N))
             
         return tot_loss / N, correct / N
