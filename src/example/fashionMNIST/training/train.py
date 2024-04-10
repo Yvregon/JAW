@@ -7,10 +7,20 @@ def train(model, loader, f_loss, optimizer, device):
     using the f_loss to compute the loss and the optimizer
     to update the parameters of the model.
 
-    Arguments :
+    :param model: A torch.nn.Module object.
+    :type model: torch.nn.Module.
+    :param loader: A torch.utils.data.DataLoader.
+    :type loader: torch.utils.data.DataLoader.
+    :param f_loss: The loss function, i.e. a loss Module.
+    :type f_loss: torch.nn.Module.
+    :param optimizer: Optimisation algorithm used for the gradient retropropagation.
+    :type optimizer: torch.optim.
+    :param device: The device to use for computation.
+    :type device: torch.device.
 
-    Returns :
+    :returns: None.
     """
+   
     model.train()
     # with tqdm.tqdm(loader, unit="batch") as tepoch:
     for i, (inputs, targets) in enumerate(loader):

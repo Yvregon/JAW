@@ -3,8 +3,25 @@ import torch
 import torchvision.transforms as transforms
 import torchvision
 
-# Example with valid_ratio = 0.2 : going to use 80%/20% split for train/valid
 def load_dataset_FashionMNIST_with_standardization(dataset_path, valid_ratio=0.2, num_threads=4, batch_size=128):
+    """
+    Load the FashionMNIST dataset with standardize data
+
+    .. tip::
+        For example with a valid_ratio = 0.2, we going to use 80%/20% split for train/valid.
+    
+    :parameter dataset_path: Path where the dataset will be read if already present, downloaded else.
+    :type dataset_path: str.
+    :parameter valid_ratio: Percentage of the FashionMNIST train dataset that will be used or the test process (validation data). Between 0.0 and 1.0.
+    :type valid_ratio: float.
+    :parameter num_threads: Number of threads used for this task.
+    :type num_threads: int.
+    :parameter batch_size: Size of the batchs.
+    :type batch_size: int.
+
+    :returns: a tuple of three dataloader: train, validation and test.
+    :rtype: Tuple of three torch.utils.data.DataLoader.
+    """
 
     # Load the dataset for the training/validation sets
     train_valid_dataset = torchvision.datasets.FashionMNIST(

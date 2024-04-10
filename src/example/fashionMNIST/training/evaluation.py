@@ -2,21 +2,21 @@ import torch
 from jaw.utils.progress_bar import progress_bar
 
 def test(model, loader, f_loss, device):
+    """Test a model by iterating over the loader.
+
+    :param model: A torch.nn.Module object.
+    :type model: torch.nn.Module.
+    :param loader: A torch.utils.data.DataLoader.
+    :type loader: torch.utils.data.DataLoader.
+    :param f_loss: The loss function, i.e. a loss Module.
+    :type f_loss: torch.nn.Module.
+    :param device: The device to use for computation.
+    :type device: torch.device.
+    
+    :returns: A tuple with the mean loss and mean accuracy.
+    :rtype: tuple of two floats.
     """
-    Test a model by iterating over the loader
-
-    Arguments :
-
-        model     -- A torch.nn.Module object
-        loader    -- A torch.utils.data.DataLoader
-        f_loss    -- The loss function, i.e. a loss Module
-        device    -- The device to use for computation
-
-    Returns :
-
-        A tuple with the mean loss and mean accuracy
-
-    """
+    
     # We disable gradient computation which speeds up the computation
     # and reduces the memory usage
     with torch.no_grad():

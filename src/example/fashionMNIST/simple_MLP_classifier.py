@@ -94,7 +94,7 @@ def main(args :  dict) -> None:
         
         :returns:  None.
 
-        """
+    """
     train_loader, val_loader, test_loader = load_dataset_FashionMNIST_with_standardization("dataset/")
     model : torch.nn.Module = build_model(args["model"])
     loss : torch.nn.Module = loss_name_to_class(args["loss"])

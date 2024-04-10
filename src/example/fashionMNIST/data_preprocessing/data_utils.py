@@ -4,6 +4,9 @@ import torch
 
 ### TRANSFORM
 class DatasetTransformer(torch.utils.data.Dataset):
+    """
+    Wrapper of the pytorch Dataset class. Add a transformation process to apply to each sample during the data loading.
+    """
 
     def __init__(self, base_dataset, transform):
         self.base_dataset = base_dataset
@@ -18,7 +21,13 @@ class DatasetTransformer(torch.utils.data.Dataset):
 
 
 def compute_mean_std(loader):
-    # Compute the mean over minibatches
+    """
+    Compute the mean over minibatches.
+
+    :parameter loader: Dataloader on which to iterate.
+    :type loader: torch.utils.data.DataLoader.
+    """
+
     mean_img = None
     for imgs, _ in loader:
         if mean_img is None:
