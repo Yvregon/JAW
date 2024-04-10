@@ -3,14 +3,12 @@ import os
 
 def generate_unique_logpath(logdir, prefix):
     """
-    Generate a unique log file for a new model saving
+    Generate a unique log file for a new model saving.
 
-    Arguments :
-
-        logdir    -- The path of the directory where the logs will be saved
-        prefix    -- Prefix name of the log file
-
-    Returns :
+    :parameter logdir: The path of the directory where the logs will be saved.
+    :type logdir: str.
+    :parameter prefix: Prefix name of the log file.
+    :type prefix: str.
     """
     i = 0
     while True:
@@ -32,6 +30,12 @@ class ModelCheckpoint:
         self.model = model
 
     def update(self, loss):
+        """
+        Check if the current model is better than the previous saved. If true, overwrite the best model by the current one.
+
+        :parameter loss: Validation loss of the current model.
+        :type loss: float.
+        """
         if (self.min_loss is None) or (loss < self.min_loss):
             print("Saving a better model")
             torch.save(self.model.state_dict(), self.filepath)

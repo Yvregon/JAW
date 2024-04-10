@@ -48,6 +48,9 @@ def generate_jaw_project(project_name: str, root_path: str):
 
 
 def main() -> None:
+    """
+    Handle the I/O process of the project generation.
+    """
     current_folder = os.getcwd()
     
     project_name: str = input("Enter a project name : ")
