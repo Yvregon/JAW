@@ -45,16 +45,11 @@ def load_dataset_FashionMNIST_with_standardization(dataset_path, valid_ratio=0.2
         train_valid_dataset, [nb_train, nb_valid]
     )
 
-    normalizing_dataset = train_dataset
-    train_dataset = DatasetTransformer(train_dataset, transforms.ToTensor())
-    valid_dataset = DatasetTransformer(valid_dataset, transforms.ToTensor())
-    test_dataset = DatasetTransformer(test_dataset, transforms.ToTensor())
-
     ## NORMALISATION
     # Loading the dataset is using 4 CPU threads
     # Using minibatches of 128 samples, except for the last that can be smaller.
 
-    normalizing_dataset = train_dataset
+    normalizing_dataset = DatasetTransformer(train_dataset, transforms.ToTensor())
     normalizing_loader = torch.utils.data.DataLoader(
         dataset=normalizing_dataset, batch_size=batch_size, num_workers=num_threads
     )
@@ -62,9 +57,10 @@ def load_dataset_FashionMNIST_with_standardization(dataset_path, valid_ratio=0.2
     # Compute mean and variance from the training set
     mean_train_tensor, std_train_tensor = compute_mean_std(normalizing_loader)
 
-    data_transforms = transforms.Compose(
-        [transforms.Lambda(lambda x: (x - mean_train_tensor) / std_train_tensor)]
-    )
+    data_transforms = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Lambda(lambda x: (x - mean_train_tensor) / std_train_tensor),
+    ])
 
     train_dataset = DatasetTransformer(train_dataset, data_transforms)
     valid_dataset = DatasetTransformer(valid_dataset, data_transforms)
