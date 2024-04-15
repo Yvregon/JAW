@@ -57,7 +57,9 @@ def main() -> None:
     
     project_name: str = input("Enter a project name : ")
     root_folder: str = input("Enter a root folder (default : " + current_folder + ") : ")
-    root_folder = current_folder + "/" + root_folder
+    
+    if not root_folder:
+        root_folder = current_folder
 
     generate_jaw_project(project_name, root_folder)
 
