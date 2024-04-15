@@ -14,27 +14,34 @@ class JAWTrainer(ABC):
     Abstract class representing a JAW's style pytorch trainer. Implement this class is the only requirement of a JAW project.
     """
 
-    def __init__(self, model : torch.nn.Module,
+    def __init__(self, model,
                  loss : torch.nn.Module,
                  train_loader : torch.utils.data.dataloader,
                  val_loader : torch.utils.data.dataloader,
                  test_loader : torch.utils.data.dataloader,
                  train_func : FunctionType,
-                 eval_func : FunctionType) -> None:
+                 eval_func : FunctionType) -> None:     
         """
-        JAWTrainer constructor. Here is registered all parameters that can most likely not change between two training.
+        Is registered inside the consgtructor all parameters that can most likely not change between two training.
 
         .. note::
             Please notice that in the litterature it's usually the validation dataset that is use for the testing process and the test dataset for the
             validation process, not the opposite. It's also tgenerally the same method that is use for the validation and the testing process.
 
-        :parameter model: Model to train.
-        :parameter loss: Loss used for train and evaluate the model.
-        :parameter train_loader: Dataloader used for load the training data.
-        :parameter val_loader: Dataloader used for load the data that will be used for testing the training process.
-        :parameter test_loader: Dataloader used for load the data that will be used for validate the model.
-        :parameter train_func: the method that handle the train loop.
-        :parameter test_func: the method that handle the validation loop.
+        :param model: Model to train.
+        :type model: torch.nn.Module.
+        :param loss: Loss used for train and evaluate the model.
+        :type loss: torch.nn.Module.
+        :param train_loader: Dataloader used for load the training data.
+        :type train_loader: torch.utils.data.dataloader.
+        :param val_loader: Dataloader used for load the data that will be used for testing the training process.
+        :type val_loader: torch.utils.data.dataloader.
+        :param test_loader: Dataloader used for load the data that will be used for validate the model.
+        :type test_loader: torch.utils.data.dataloader.
+        :param train_func: the method that handle the train loop.
+        :type train_func: FunctionType.
+        :param test_func: the method that handle the validation loop.
+        :type test_func: FunctionType.
         """
         
         self.model = model

@@ -5,12 +5,15 @@ import os
 Script for JAW project fast generation.
 """
 
-def snake_to_pascal_case(string: str):
-    """Translate a snake_case string to a PascalCase string.
+def snake_to_pascal_case(string: str) -> str:
+    """
+    Translate a snake_case string to a PascalCase string.
+
     :param string: String to translate.
     :type string: str.
 
     :returns: string to PascalCase format.
+    :rtype: str.
     """
     titled_string = string.title()
     space_joined_string = titled_string.replace('_', '')
@@ -21,14 +24,13 @@ def snake_to_pascal_case(string: str):
 def generate_jaw_project(project_name: str, root_path: str):
     """
     Generate a new JAW project by copying base files from `__template__` folder then replace the placeholder names by the project name.
+
     :param project_name: The name of the project.
     :type project_name: str.
     :param root_path: The root directory of the project.
     :type root_path: str.
 
     :returns: None.
-
-
     """
     shutil.copytree(os.path.dirname(__file__) + "/__template__", root_path + "/", dirs_exist_ok=True)
     prefix: str = root_path + "/" + project_name
@@ -54,7 +56,7 @@ def main() -> None:
     current_folder = os.getcwd()
     
     project_name: str = input("Enter a project name : ")
-    root_folder: str = input("Enter a root folde (default : " + current_folder + ") : ")
+    root_folder: str = input("Enter a root folder (default : " + current_folder + ") : ")
     root_folder = current_folder + "/" + root_folder
 
     generate_jaw_project(project_name, root_folder)

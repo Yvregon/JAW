@@ -21,7 +21,7 @@ def progress_bar(current: int, total: int, msg: str = None):
 
     .. note::
 
-       Call this function inside the :func: `test` function. Example :
+       Call this function inside the :func:`test` function. Example :
 
        .. code-block:: python
 
