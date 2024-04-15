@@ -13,7 +13,8 @@ from jaw.utils.computation import get_device
 
 
 class SimpleMLPClassifier(JAWTrainer):
-    """Typical example implementation of a JAWTrainer. We want train a mini classifier with the fashion MNIST dataset (https://github.com/zalandoresearch/fashion-mnist).
+    """Typical example implementation of a JAWTrainer. We want train a mini classifier with the
+    `fashion MNIST <https://github.com/zalandoresearch/fashion-mnist>`_dataset.
 
     Here we want be able to launch a training with our previously written classes (dataloader, models, losses, training and evaluation processes).
 

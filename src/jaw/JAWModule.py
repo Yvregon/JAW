@@ -22,11 +22,11 @@ class JAWTrainer(ABC):
                  train_func : FunctionType,
                  eval_func : FunctionType) -> None:     
         """
-        Is registered inside the consgtructor all parameters that can most likely not change between two training.
+        Is registered inside the constructor all parameters that can most likely not change between two training.
 
         .. note::
-            Please notice that in the litterature it's usually the validation dataset that is use for the testing process and the test dataset for the
-            validation process, not the opposite. It's also tgenerally the same method that is use for the validation and the testing process.
+            Please notice that in the litterature we can find the case of `test` process before `validation`, but it's usually the validation process
+            that precedes the test one. It's also generally the same method that is use for the validation and the testing process.
 
         :param model: Model to train.
         :type model: torch.nn.Module.
