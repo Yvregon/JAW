@@ -4,10 +4,10 @@ import torch
 import os
 import argparse
 from torch.utils.tensorboard import SummaryWriter
-from models.FullyConnected import *
-from losses.loss import *
-from data_preprocessing.MNIST_dataset import *
-from training import evaluation, train
+from example.fashionMNIST.models.FullyConnected import *
+from example.fashionMNIST.losses.loss import *
+from example.fashionMNIST.data_preprocessing.MNIST_dataset import *
+from example.fashionMNIST.training import evaluation, train
 from jaw.utils.tracking import generate_unique_logpath
 from jaw.utils.computation import get_device
 
