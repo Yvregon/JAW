@@ -4,7 +4,6 @@ jaw package
 .. automodule:: jaw
    :members:
    :undoc-members:
-   :show-inheritance:
 
 Subpackages
 -----------
@@ -23,4 +22,10 @@ jaw.JAWModule module
 .. automodule:: jaw.JAWModule
    :members:
    :undoc-members:
-   :show-inheritance:
+
+jaw.JAWProject module
+---------------------
+
+.. automodule:: jaw.JAWProject
+   :members:
+   :undoc-members:

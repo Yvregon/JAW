@@ -4,7 +4,6 @@ example.fashionMNIST package
 .. automodule:: example.fashionMNIST
    :members:
    :undoc-members:
-   :show-inheritance:
 
 Subpackages
 -----------
@@ -26,4 +25,3 @@ example.fashionMNIST.simple\_MLP\_classifier module
 .. automodule:: example.fashionMNIST.simple_MLP_classifier
    :members:
    :undoc-members:
-   :show-inheritance:

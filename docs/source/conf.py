@@ -18,12 +18,14 @@ extensions = [
     'sphinx_rtd_theme',
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
+    'sphinx_autodoc_typehints',
     'sphinx.ext.napoleon',
     ]
 
 templates_path = ['_templates']
 exclude_patterns = []
-
+autoclass_content = 'both'
+add_module_names = False
 
 
 # -- Options for HTML output -------------------------------------------------
