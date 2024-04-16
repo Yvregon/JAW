@@ -21,7 +21,7 @@ def linear_relu(dim_in, dim_out):
 
 class FullyConnected(nn.Module):
     """
-    Definition simple fully connected classification model.
+    Definition of a simple fully connected classification model.
     """
 
     def __init__(self, input_size, num_classes):
