@@ -63,4 +63,59 @@ according to the following formula:
    :scale: 30 %
    :alt: A LaTeX formula of our L2 regularization.
 
+Some fiew changes are necessary. We can't save our model as one, we declare each layer as one and reconstruct the model inside the ``forward`` method. We also add 
+a ``penality`` method for apply the formula and a ``l2_reg`` parameter, which is our lambda factor.
 
+.. code-block:: python
+
+    class FullyConnectedRegularized(nn.Module):
+
+        def __init__(self, input_size, num_classes, l2_reg):
+            super(FullyConnectedRegularized, self).__init__()
+            self.l2_reg = l2_reg
+            self.lin1 = nn.Linear(input_size, 256)
+            self.lin2 = nn.Linear(256, 256)
+            self.lin3 = nn.Linear(256, num_classes)
+
+        def penalty(self):
+            return self.l2_reg * (
+                self.lin1.weight.norm(2)
+                + self.lin2.weight.norm(2)
+                + self.lin3.weight.norm(2)
+            )
+
+        def forward(self, x):
+            x = x.view(x.size()[0], -1)
+            # Reconstruction of our model
+            x = nn.functional.relu(self.lin1(x))
+            x = nn.functional.relu(self.lin2(x))
+            y = self.lin3(x)
+            return y
+    
+We also have to update our train function for calling this penality method when required.
+
+.. code-block:: python
+
+    def train(model, loader, f_loss, optimizer, device):
+
+        model.train()
+
+        for (inputs, targets) in enumerate(loader):
+            inputs, targets = inputs.to(device), targets.to(device)
+
+            outputs = model(inputs)
+            loss = f_loss(outputs, targets)
+
+            optimizer.zero_grad()
+            loss.backward()
+
+            # whatever the model used, we check if it contain a "penality" method 
+            if hasattr(model, "penalty"):
+                model.penalty().backward()
+
+            optimizer.step()
+
+.. warning::
+
+    We call the lamda factor of the formula ``l2_reg`` inside this example class. Despite of the fact that **lambda** term is reserved in Python language, keep in mind 
+    for your project that isn't a very good name.
