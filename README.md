@@ -1,4 +1,4 @@
-# Walcome to the repository of Just Another (Pytorch) Wrapper!
+# Welcome to the repository of Just Another (Pytorch) Wrapper!
 
 ## What is JAW?
 
@@ -10,6 +10,12 @@ For the installation of JAW and Example modules , use:
 ```python3 setup.py sdist```
 for generate the archive, then install it via pip:
 ```pip install dist/jaw-0.1.tar.gz```
+
+## Example
+
+For run the training script given in example, use the following command:
+
+```python3 src/example/fashionMNIST/simple_MLP_classifier.py --epochs 5 --loss RelativeL2 --model FCReg --logdir logs```
 
 ## Tutorial
 
