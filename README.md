@@ -8,7 +8,7 @@ JAW (Just Another (Pytorch) Wrapper) is, like is name speaks for itself, a littl
 
 For the installation of JAW and Example modules , use:
 ```python3 setup.py sdist```
-For generate the archive, then install it via pip:
+for generate the archive, then install it via pip:
 ```pip install dist/jaw-0.1.tar.gz```
 
 ## Tutorial
