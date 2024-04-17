@@ -13,7 +13,7 @@ JAW (Just Another (Pytorch) Wrapper) is, like is name speaks for itself, a littl
 The main idea is to show how write is own little ML framework based on Pytorch, but with an architecture flexible enought to permit the use of another
 library (such as keras or Tensorflow).
 
-Here you will find a tutorial for how use JAW for create its ML project and a documentation of the JAW package.
+Here you will find a tutorial for how use JAW for create its ML project and the documentation of the JAW package.
 
 .. important::
 

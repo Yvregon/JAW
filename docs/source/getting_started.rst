@@ -63,3 +63,7 @@ Let's have a closer look to this folder structure:
 - ``losses`` and ``models`` are the folder where put our custom network models and loss classes.
 - The ``training`` folder contain our functions that handle training and evaluation loops.
 - ``project_name_trainer.py`` is our "main" script: it's here where we define our training process and launch options.
+
+.. tip::
+    The project generation script produce automatic reStructuredText docstring, but you can also generate the same Sphinx documentation using a more readable 
+    docstring with `napoleon <https://sphinxcontrib-napoleon.readthedocs.io/en/latest/>`_ extention (used by **numpy** for instance).
