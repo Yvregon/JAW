@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Training functions &mdash; Just Another (Pytorch) Wrapper 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=f2a433a1"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Model" href="model.html" />
+    <link rel="prev" title="Data preprocessing" href="data_preprocessing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Just Another (Pytorch) Wrapper
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="tutorial.html">Tutorial</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_preprocessing.html">Data preprocessing</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Training functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#train">Train</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#wait-where-is-my-model">Wait … where is my model?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#autograd">Autograd</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#eval">Eval</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom_loss.html">Custom loss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training_process.html">Training Process</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Just Another (Pytorch) Wrapper</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="tutorial.html">Tutorial</a></li>
+      <li class="breadcrumb-item active">Training functions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/training_functions.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="training-functions">
+<h1>Training functions<a class="headerlink" href="#training-functions" title="Link to this heading"></a></h1>
+<p>Now it’s time to write the method that will be called inside every loop turn. We need two of them : one for train the model and another for validate is accuracy,
+then test it.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>It’s possible to use two different function for evaluate the model during validation and test phase, but isn’t recommended since use the same evaluation method
+allow us to compute a confidence for our network.</p>
+</div>
+<section id="train">
+<h2>Train<a class="headerlink" href="#train" title="Link to this heading"></a></h2>
+<p>All we have to do here is to put our sample (now turned into tensor, remember <a class="reference external" href="data_preprocessing.html">here</a>) inside a device to be calculated, compute a loss and
+retropropagate the gradient through our network. In Pytorch we can do that easily with one loop and few instructions. Here we write this function inside
+<code class="docutils literal notranslate"><span class="pre">training/train.py</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">f_loss</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+
+    <span class="c1"># Switch the model to &quot;train mode&quot;</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">loader</span><span class="p">):</span>
+        <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">targets</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="c1"># Compute the forward pass through the network up to the loss</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">f_loss</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+
+        <span class="c1"># Backward and optimize</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</pre></div>
+</div>
+<section id="wait-where-is-my-model">
+<h3>Wait … where is my model?<a class="headerlink" href="#wait-where-is-my-model" title="Link to this heading"></a></h3>
+<p>If you go further in this tutorial, you will notices that we never give at the loss object a reference to the model or its parameters. Moreover we use two unexplained
+method calls : <code class="docutils literal notranslate"><span class="pre">model.train()</span></code> and <code class="docutils literal notranslate"><span class="pre">optimizer.zero_grad()</span></code>. For have a good understanding of all of this, we must talk about <strong>Autograd</strong>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This part is important only if you keep using Pytorch in your project and only concern an implementation problem.</p>
+</div>
+</section>
+<section id="autograd">
+<h3>Autograd<a class="headerlink" href="#autograd" title="Link to this heading"></a></h3>
+<p>Autograd is a Pytorch module of automatic differentiation, which allow us to compute tensor’s gradient. At the loading of the torch core modules, it create a graph
+of functions called <code class="docutils literal notranslate"><span class="pre">grad_fn</span></code>, which represent the data of our tensor (inside our device) in the form of an acyclic graph where the inputs are the leaves and the
+outputs the roots. Everytime a tensor with the flag <code class="docutils literal notranslate"><span class="pre">requires_grad</span></code> (true by default), activated is submitted to an operation, it’s updated inside the graph.
+That is why we have to put our tensor to devices before computation. All our <code class="docutils literal notranslate"><span class="pre">nn.Module</span></code> object have a reference to this graph, so when we use
+<code class="docutils literal notranslate"><span class="pre">optimizer.zero_grad()</span></code>, all the previously computed gradients are sets to 0, here in order to not accumulate the gradient through our iterations. Same for the loss
+object, when call <code class="docutils literal notranslate"><span class="pre">backward()</span></code> method, all computed gradient is retropropagated through the previously used tensors. You can take a look at this good
+<a class="reference external" href="https://amsword.medium.com/understanding-pytorchs-autograd-with-grad-fn-and-next-functions-b2c4836daa00">example</a> if you want to know more about Autograd and
+<code class="docutils literal notranslate"><span class="pre">graph_fn</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">model.train()</span></code> give as instructions to the model to consider is special layers, such as <em>batchNorm</em> or <em>Dropout</em> layers, useful for the training but not for
+inference. This mode is activated by default, but later we will deactivate it inside our evaluation loop, so we must ensure that the train mode is switched on
+before the train loop.</p>
+</div>
+</section>
+</section>
+<section id="eval">
+<h2>Eval<a class="headerlink" href="#eval" title="Link to this heading"></a></h2>
+<p>For the evaluation function, we will keep a similar structure. But remember just above: when doing inference, we want avoid non-useful computation. So we will
+deactivate the model’s training mode and indicate to the <strong>autograd</strong> module that we don’t want to track our next operations and calculate the gradient of our tensors.
+For that, we write our piece of code under <strong>no_grad</strong> context.</p>
+<p>We write this function inside <code class="docutils literal notranslate"><span class="pre">training/evaluation.py</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">f_loss</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+
+
+        <span class="n">N</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">tot_loss</span><span class="p">,</span> <span class="n">correct</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">loader</span><span class="p">):</span>
+
+            <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">targets</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+
+            <span class="c1"># We accumulate the exact number of processed samples</span>
+            <span class="n">N</span> <span class="o">+=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="c1"># We accumulate the loss considering</span>
+            <span class="c1"># The multipliation by inputs.shape[0] is due to the fact</span>
+            <span class="c1"># that our loss criterion is averaging over its samples</span>
+            <span class="n">tot_loss</span> <span class="o">+=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">f_loss</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+
+            <span class="n">predicted_targets</span> <span class="o">=</span> <span class="n">outputs</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">correct</span> <span class="o">+=</span> <span class="p">(</span><span class="n">predicted_targets</span> <span class="o">==</span> <span class="n">targets</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">tot_loss</span> <span class="o">/</span> <span class="n">N</span><span class="p">,</span> <span class="n">correct</span> <span class="o">/</span> <span class="n">N</span>
+</pre></div>
+</div>
+<p>When we evaluate a model, we want known more than only the loss score. Here we also compute the accuracy score.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>For more clarity when the training is running, we can add a progress bar as below, with a built-in JAW method.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jaw.utils.progress_bar</span> <span class="kn">import</span> <span class="n">progress_bar</span>
+
+<span class="o">...</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">loader</span><span class="p">):</span>
+
+    <span class="o">...</span>
+    <span class="n">progress_bar</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">loader</span><span class="p">),</span> <span class="s1">&#39;Loss: </span><span class="si">%.3f</span><span class="s1"> | Acc: </span><span class="si">%.3f%%</span><span class="s1"> (</span><span class="si">%d</span><span class="s1">/</span><span class="si">%d</span><span class="s1">)&#39;</span>
+                        <span class="o">%</span> <span class="p">(</span><span class="n">tot_loss</span><span class="o">/</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="mf">100.</span><span class="o">*</span><span class="n">correct</span><span class="o">/</span><span class="n">N</span><span class="p">,</span> <span class="n">correct</span><span class="p">,</span> <span class="n">N</span><span class="p">))</span>
+
+<span class="k">return</span> <span class="n">tot_loss</span> <span class="o">/</span> <span class="n">N</span><span class="p">,</span> <span class="n">correct</span> <span class="o">/</span> <span class="n">N</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="data_preprocessing.html" class="btn btn-neutral float-left" title="Data preprocessing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="model.html" class="btn btn-neutral float-right" title="Model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Quentin Dupré.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

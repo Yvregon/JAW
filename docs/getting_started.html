@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Getting started &mdash; Just Another (Pytorch) Wrapper 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=f2a433a1"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Data preprocessing" href="data_preprocessing.html" />
+    <link rel="prev" title="Tutorial" href="tutorial.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Just Another (Pytorch) Wrapper
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="tutorial.html">Tutorial</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Getting started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#project-generation">Project generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#file-tree">File tree</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="data_preprocessing.html">Data preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training_functions.html">Training functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom_loss.html">Custom loss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training_process.html">Training Process</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Just Another (Pytorch) Wrapper</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="tutorial.html">Tutorial</a></li>
+      <li class="breadcrumb-item active">Getting started</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/getting_started.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="getting-started">
+<h1>Getting started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h1>
+<p>For this tutorial, we will only focuses in the implementation of the fully connected part of Jeremy Fix’s <a class="reference external" href="https://teaching.pages.centralesupelec.fr/deeplearning-lectures-build/00-pytorch-fashionMnist.html">tutorial</a>.
+In this page, we gonna see how generate the project and the role of each file.</p>
+<section id="project-generation">
+<h2>Project generation<a class="headerlink" href="#project-generation" title="Link to this heading"></a></h2>
+<p>First, we need to generate an empty JAW project.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>src/jaw/JAWProject.py
+</pre></div>
+</div>
+<p>Enter the name of your project and where save it.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Use an absolute path for your project filepath.</p>
+</div>
+<p>You will have this result:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>yvregon@nostradamus:~/JAW$<span class="w"> </span>python3<span class="w"> </span>src/jaw/JAWProject.py
+Enter<span class="w"> </span>a<span class="w"> </span>project<span class="w"> </span>name<span class="w"> </span>:<span class="w"> </span>tutorial
+Enter<span class="w"> </span>a<span class="w"> </span>root<span class="w"> </span>folder<span class="w"> </span><span class="o">(</span>default<span class="w"> </span>:<span class="w"> </span>/home/yvregon/JAW<span class="o">)</span><span class="w"> </span>:
+New<span class="w"> </span>JAW<span class="w"> </span>project<span class="w"> </span>generated.
+</pre></div>
+</div>
+<p>And the following structure:</p>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="_images/folder_picture.png"><img alt="A picture of a folder inside VSCode, with the project structure." src="_images/folder_picture.png" style="width: 252.0px; height: 375.0px;" /></a>
+<figcaption>
+<p><span class="caption-text">Our project structure.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="file-tree">
+<h2>File tree<a class="headerlink" href="#file-tree" title="Link to this heading"></a></h2>
+<p>For now, you will have a tree file like this :</p>
+<div class="line-block">
+<div class="line">project_name</div>
+<div class="line">├── data_preprocessing</div>
+<div class="line">│   └── data_utils.py</div>
+<div class="line">├── losses</div>
+<div class="line">│   └── loss.py</div>
+<div class="line">├── models</div>
+<div class="line">│   └── CustomModel.py</div>
+<div class="line">├── training</div>
+<div class="line">│   ├── evaluation.py</div>
+<div class="line">│   └── train.py</div>
+<div class="line">└── project_name_trainer.py</div>
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<p>Let’s have a closer look to this folder structure:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">project_name</span></code> is the root of our project.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data_preprocessing</span></code> is where we put our code for everything related to the data preprocessing, such as dataset transformer or splitting method.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">losses</span></code> and <code class="docutils literal notranslate"><span class="pre">models</span></code> are the folder where put our custom network models and loss classes.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">training</span></code> folder contain our functions that handle training and evaluation loops.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">project_name_trainer.py</span></code> is our “main” script: it’s here where we define our training process and launch options.</p></li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The project generation script produce automatic reStructuredText docstring, but you can also generate the same Sphinx documentation using a more readable
+docstring with <a class="reference external" href="https://sphinxcontrib-napoleon.readthedocs.io/en/latest/">napoleon</a> extention (used by <strong>numpy</strong> for instance).</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tutorial.html" class="btn btn-neutral float-left" title="Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="data_preprocessing.html" class="btn btn-neutral float-right" title="Data preprocessing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Quentin Dupré.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

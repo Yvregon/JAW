@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data preprocessing &mdash; Just Another (Pytorch) Wrapper 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=f2a433a1"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Training functions" href="training_functions.html" />
+    <link rel="prev" title="Getting started" href="getting_started.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Just Another (Pytorch) Wrapper
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="tutorial.html">Tutorial</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Data preprocessing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#load-dataset">Load dataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dataset-to-data-loaders">Dataset to data loaders</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="training_functions.html">Training functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom_loss.html">Custom loss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training_process.html">Training Process</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Just Another (Pytorch) Wrapper</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="tutorial.html">Tutorial</a></li>
+      <li class="breadcrumb-item active">Data preprocessing</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/data_preprocessing.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="data-preprocessing">
+<h1>Data preprocessing<a class="headerlink" href="#data-preprocessing" title="Link to this heading"></a></h1>
+<p>First things first, we need to load our dataset and transform our data in a way we can use it. Let’s talk about our dataset.</p>
+<p><a class="reference external" href="https://github.com/zalandoresearch/fashion-mnist">fashion MNIST</a> is a dataset provided by Zalando brand R&amp;D team. It is split into two sets :
+a training set of 60,000 examples and a test set of 10,000 examples. Each example is a grayscale image of 28x28 pixels, with a class label (among 10),
+representing a Zalando’s article.</p>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="_images/fashion_MNIST_classes.png"><img alt="A table with each class ID and their description." src="_images/fashion_MNIST_classes.png" style="width: 190.0px; height: 408.0px;" /></a>
+<figcaption>
+<p><span class="caption-text">Description of the ten classes of the dataset (took from the <cite>fashion-mnist</cite> git repository).</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<section id="load-dataset">
+<h2>Load dataset<a class="headerlink" href="#load-dataset" title="Link to this heading"></a></h2>
+<p>In order to use it, we will create a new file, here called <cite>fashion_MNIST_dataset.py</cite>, where define a loading method called
+<cite>load_dataset_FashionMNIST_with_standardization</cite>. Luckily for us, Pytorch already have a built-in method for the loading of Fashion MNIST.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">load_dataset_FashionMNIST_with_standardization</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">,</span> <span class="n">valid_ratio</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">num_threads</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">):</span>
+
+    <span class="c1"># Load the dataset for the training/validation sets</span>
+    <span class="n">train_valid_dataset</span> <span class="o">=</span> <span class="n">torchvision</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">FashionMNIST</span><span class="p">(</span>
+        <span class="n">root</span><span class="o">=</span><span class="n">dataset_path</span><span class="p">,</span>
+        <span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">transform</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">download</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Load the test set</span>
+    <span class="n">test_dataset</span> <span class="o">=</span> <span class="n">torchvision</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">FashionMNIST</span><span class="p">(</span>
+        <span class="n">root</span><span class="o">=</span><span class="n">dataset_path</span><span class="p">,</span>
+        <span class="n">transform</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">train</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Split it into training and validation sets</span>
+    <span class="n">nb_train</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">valid_ratio</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_valid_dataset</span><span class="p">))</span>
+    <span class="n">nb_valid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">valid_ratio</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_valid_dataset</span><span class="p">))</span>
+    <span class="n">train_dataset</span><span class="p">,</span> <span class="n">valid_dataset</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">random_split</span><span class="p">(</span>
+        <span class="n">train_valid_dataset</span><span class="p">,</span> <span class="p">[</span><span class="n">nb_train</span><span class="p">,</span> <span class="n">nb_valid</span><span class="p">]</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The Fashion MNIST dataset is already split in two (training and test). So we have to keep the whole second one for the testing dataset and split the first in two
+for have a training and a validation dataset. In another scenario, you must likely split a whole dataset into three distinct parts.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We also precise the number of threads we want to use for CPU parallelism and the size of our batchs. A very little batch is sometime called <cite>minibatch</cite>
+in the litterature.</p>
+</div>
+<p>For now, our samples are raw PIL image. However, Pytorch manipulate <a class="reference external" href="https://pytorch.org/tutorials/beginner/introyt/tensors_deeper_tutorial.html">tensors</a>, so we
+need to convert our images to Pytorch tensors. For that, the first idea that come in mind is to apply a image-to-tensor transformation for each sample. It is what we
+are going to do, wrapping our dataset inside a DataTransformer class which is already declared inside <code class="docutils literal notranslate"><span class="pre">data_utils.py</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">train_dataset</span> <span class="o">=</span> <span class="n">DatasetTransformer</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">data_transforms</span><span class="p">)</span>
+<span class="n">valid_dataset</span> <span class="o">=</span> <span class="n">DatasetTransformer</span><span class="p">(</span><span class="n">valid_dataset</span><span class="p">,</span> <span class="n">data_transforms</span><span class="p">)</span>
+<span class="n">test_dataset</span> <span class="o">=</span> <span class="n">DatasetTransformer</span><span class="p">(</span><span class="n">test_dataset</span><span class="p">,</span> <span class="n">data_transforms</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>But if we need many transformation, is a good  practice to pack our transformations together. Another good practice for machine learning is to normalize the inputs.
+Despite the fact that <code class="docutils literal notranslate"><span class="pre">torch.to_tensor()</span></code> method already normalize our data, we going to add a standardization transformation to our datasets. For standardiez our
+data, we need a mean and a variance. They can be extracted from our most representative set, i.e. the training dataset, by the following function added
+to <code class="docutils literal notranslate"><span class="pre">data_utils.py</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">compute_mean_std</span><span class="p">(</span><span class="n">loader</span><span class="p">):</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Compute the mean over minibatches.</span>
+
+<span class="sd">:parameter loader: Dataloader on which to iterate.</span>
+<span class="sd">:type loader: torch.utils.data.DataLoader.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">mean_img</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="k">for</span> <span class="n">imgs</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">loader</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">mean_img</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">mean_img</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">imgs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">mean_img</span> <span class="o">+=</span> <span class="n">imgs</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">mean_img</span> <span class="o">/=</span> <span class="nb">len</span><span class="p">(</span><span class="n">loader</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span>
+
+<span class="c1"># Compute the std over minibatches</span>
+<span class="n">std_img</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">mean_img</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">imgs</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">loader</span><span class="p">:</span>
+    <span class="n">std_img</span> <span class="o">+=</span> <span class="p">((</span><span class="n">imgs</span> <span class="o">-</span> <span class="n">mean_img</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">std_img</span> <span class="o">/=</span> <span class="nb">len</span><span class="p">(</span><span class="n">loader</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span>
+<span class="n">std_img</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">std_img</span><span class="p">)</span>
+
+<span class="c1"># Set the variance of pixels with no variance to 1</span>
+<span class="c1"># Because there is no variance</span>
+<span class="c1"># these pixels will anyway have no impact on the final decision</span>
+<span class="n">std_img</span><span class="p">[</span><span class="n">std_img</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="k">return</span> <span class="n">mean_img</span><span class="p">,</span> <span class="n">std_img</span>
+</pre></div>
+</div>
+<p>It is now possible to compose our transformations and apply them for each sample.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">## NORMALISATION</span>
+<span class="c1"># Loading the dataset is using 4 CPU threads</span>
+<span class="c1"># Using minibatches of 128 samples, except for the last that can be smaller.</span>
+
+<span class="n">normalizing_dataset</span> <span class="o">=</span> <span class="n">DatasetTransformer</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">())</span>
+<span class="n">normalizing_loader</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span>
+    <span class="n">dataset</span><span class="o">=</span><span class="n">normalizing_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="n">num_threads</span>
+<span class="p">)</span>
+
+<span class="c1"># Compute mean and variance from the training set</span>
+<span class="n">mean_train_tensor</span><span class="p">,</span> <span class="n">std_train_tensor</span> <span class="o">=</span> <span class="n">compute_mean_std</span><span class="p">(</span><span class="n">normalizing_loader</span><span class="p">)</span>
+
+<span class="n">data_transforms</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">([</span>
+    <span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">(),</span>
+    <span class="n">transforms</span><span class="o">.</span><span class="n">Lambda</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">mean_train_tensor</span><span class="p">)</span> <span class="o">/</span> <span class="n">std_train_tensor</span><span class="p">),</span>
+<span class="p">])</span>
+
+<span class="n">train_dataset</span> <span class="o">=</span> <span class="n">DatasetTransformer</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">data_transforms</span><span class="p">)</span>
+<span class="n">valid_dataset</span> <span class="o">=</span> <span class="n">DatasetTransformer</span><span class="p">(</span><span class="n">valid_dataset</span><span class="p">,</span> <span class="n">data_transforms</span><span class="p">)</span>
+<span class="n">test_dataset</span> <span class="o">=</span> <span class="n">DatasetTransformer</span><span class="p">(</span><span class="n">test_dataset</span><span class="p">,</span> <span class="n">data_transforms</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="dataset-to-data-loaders">
+<h2>Dataset to data loaders<a class="headerlink" href="#dataset-to-data-loaders" title="Link to this heading"></a></h2>
+<p>A <strong>dataloader</strong> (see official Pytorch tutorial <a class="reference external" href="https://pytorch.org/tutorials/beginner/basics/data_tutorial.html">here</a>) is a wrapper class that allows us to
+iterate through our examples (and also shuffle our data and define the size of the batches we use). This class exist in Pytorch, so we can use it for create
+three loaders : one by dataset.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">train_loader</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span>
+    <span class="n">dataset</span><span class="o">=</span><span class="n">train_dataset</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+    <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># &lt;-- this reshuffles the data at every epoch</span>
+    <span class="n">num_workers</span><span class="o">=</span><span class="n">num_threads</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">valid_loader</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span>
+    <span class="n">dataset</span><span class="o">=</span><span class="n">valid_dataset</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+    <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">num_workers</span><span class="o">=</span><span class="n">num_threads</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">test_loader</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span>
+    <span class="n">dataset</span><span class="o">=</span><span class="n">test_dataset</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+    <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">num_workers</span><span class="o">=</span><span class="n">num_threads</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Finaly, we returns theses three loaders.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="getting_started.html" class="btn btn-neutral float-left" title="Getting started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="training_functions.html" class="btn btn-neutral float-right" title="Training functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Quentin Dupré.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

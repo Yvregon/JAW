@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Training Process &mdash; Just Another (Pytorch) Wrapper 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=f2a433a1"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Modules documentation" href="modules.html" />
+    <link rel="prev" title="Custom loss" href="custom_loss.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Just Another (Pytorch) Wrapper
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="tutorial.html">Tutorial</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_preprocessing.html">Data preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training_functions.html">Training functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom_loss.html">Custom loss</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Training Process</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#write-the-process">Write the process</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#define-launch-options">Define launch options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#launch-the-training">Launch the training</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Just Another (Pytorch) Wrapper</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="tutorial.html">Tutorial</a></li>
+      <li class="breadcrumb-item active">Training Process</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/training_process.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="training-process">
+<h1>Training Process<a class="headerlink" href="#training-process" title="Link to this heading"></a></h1>
+<p>Finally, it’s time to combine all our previous code into a main script. In order to avoid to redeclare a new class for each main script (in the case of multiple
+projects for a bigger application), we extends the JawTrainer class. Here we will write our training workflow inside the <code class="docutils literal notranslate"><span class="pre">launch_training()</span></code> method.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SimpleMLPClassifier</span><span class="p">(</span><span class="n">JAWTrainer</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">launch_training</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epochs</span> <span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">device</span> <span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">logdir</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">prefix</span> <span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="o">...</span>
+</pre></div>
+</div>
+<section id="write-the-process">
+<h2>Write the process<a class="headerlink" href="#write-the-process" title="Link to this heading"></a></h2>
+<p>First, let’s plan a workflow to implement. Here we consider the following one :</p>
+<ul class="simple">
+<li><p>Create a new log directory for this training</p></li>
+<li><p>Create an optimizer with the model parameters</p></li>
+<li><p>Send the model into the wanted devices</p></li>
+<li><p>Use a tensorboard for monitor the training</p></li>
+<li><dl class="simple">
+<dt>For each epoch :</dt><dd><ul>
+<li><p>Train the model</p></li>
+<li><p>Save it if it’s better than the previous one</p></li>
+<li><p>Update the tensorboard data</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>At the end, write a training summary</p></li>
+</ul>
+<p>The JAW package contain some useful built-in methods for save and tracking part. First we create a new directory with an unique name for save the trained model :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create the directory &quot;./logs&quot; if it does not exist</span>
+<span class="n">top_logdir</span> <span class="o">=</span> <span class="s2">&quot;./logs&quot;</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">top_logdir</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">top_logdir</span><span class="p">)</span>
+
+<span class="n">logdir</span> <span class="o">=</span> <span class="n">generate_unique_logpath</span><span class="p">(</span><span class="n">top_logdir</span><span class="p">,</span> <span class="n">prefix</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Logging to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">logdir</span><span class="p">))</span>
+<span class="c1"># -&gt; Prints out     Logging to   ./logs/simple_MLP_classifier_X</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">logdir</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">logdir</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then, we send the model to the computation device,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and handle its saving.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># We only keeping the best model (depends of the validation loss)</span>
+<span class="n">checkpoint</span> <span class="o">=</span> <span class="n">ModelCheckpoint</span><span class="p">(</span><span class="n">logdir</span> <span class="o">+</span> <span class="s2">&quot;/best_model.pt&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+<span class="n">tensorboard_writer</span> <span class="o">=</span> <span class="n">SummaryWriter</span><span class="p">(</span><span class="n">log_dir</span><span class="o">=</span><span class="n">logdir</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The biggest is already written, we only need to call our <code class="docutils literal notranslate"><span class="pre">train()</span></code> and <code class="docutils literal notranslate"><span class="pre">eval()</span></code> function inside a loop.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Epoch </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">epoch</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">train_func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_loader</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+    <span class="n">train_loss</span><span class="p">,</span> <span class="n">train_acc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_loader</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+    <span class="n">val_loss</span><span class="p">,</span> <span class="n">val_acc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_loader</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; Validation : Loss : </span><span class="si">{:.4f}</span><span class="s2">, Acc : </span><span class="si">{:.4f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">val_loss</span><span class="p">,</span> <span class="n">val_acc</span><span class="p">))</span>
+
+    <span class="c1"># Check if the current model is better than the previous best.</span>
+    <span class="n">checkpoint</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">val_loss</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If we also want show theses informations (validation loss and accuracy) inside our tensorboard, we need to write them at the end of the loop like this :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+    <span class="o">...</span>
+
+    <span class="c1"># Add the score of the training and validation loss and accuracy inside the tensorboard logs. You can decide to add more information</span>
+    <span class="c1"># or keep only losses (it doesn&#39;t make sense to show the accuracy of a regression model).</span>
+    <span class="n">tensorboard_writer</span><span class="o">.</span><span class="n">add_scalar</span><span class="p">(</span><span class="s2">&quot;metrics/train_loss&quot;</span><span class="p">,</span> <span class="n">train_loss</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>
+    <span class="n">tensorboard_writer</span><span class="o">.</span><span class="n">add_scalar</span><span class="p">(</span><span class="s2">&quot;metrics/train_acc&quot;</span><span class="p">,</span> <span class="n">train_acc</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>
+    <span class="n">tensorboard_writer</span><span class="o">.</span><span class="n">add_scalar</span><span class="p">(</span><span class="s2">&quot;metrics/val_loss&quot;</span><span class="p">,</span> <span class="n">val_loss</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>
+    <span class="n">tensorboard_writer</span><span class="o">.</span><span class="n">add_scalar</span><span class="p">(</span><span class="s2">&quot;metrics/val_acc&quot;</span><span class="p">,</span> <span class="n">val_acc</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Finally, we write our summary file inside the log directory</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Write the summary file</span>
+<span class="n">summary_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_summary_text</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>
+<span class="n">summary_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">logdir</span> <span class="o">+</span> <span class="s2">&quot;/summary.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+<span class="n">summary_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">summary_text</span><span class="p">)</span>
+<span class="n">summary_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="n">tensorboard_writer</span><span class="o">.</span><span class="n">add_text</span><span class="p">(</span><span class="s2">&quot;Experiment summary&quot;</span><span class="p">,</span> <span class="n">summary_text</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can display way more than just scalar values and a summary with TensorBoard. Check the documentation <a class="reference external" href="https://www.tensorflow.org/tensorboard?hl=fr">here</a>
+for more info about it.</p>
+</div>
+</section>
+<section id="define-launch-options">
+<h2>Define launch options<a class="headerlink" href="#define-launch-options" title="Link to this heading"></a></h2>
+<p>In order to facilitate our training launchs, we want be able to parametrize them directly inside the terminal command line. For that, we first write this short main
+function.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span> <span class="p">:</span>  <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+<span class="n">train_loader</span><span class="p">,</span> <span class="n">val_loader</span><span class="p">,</span> <span class="n">test_loader</span> <span class="o">=</span> <span class="n">load_dataset_FashionMNIST_with_standardization</span><span class="p">(</span><span class="s2">&quot;dataset/&quot;</span><span class="p">)</span>
+<span class="n">model</span> <span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span> <span class="o">=</span> <span class="n">build_model</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">])</span>
+<span class="n">loss</span> <span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span> <span class="o">=</span> <span class="n">loss_name_to_class</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">])</span>
+
+<span class="n">MNIST_training</span> <span class="p">:</span> <span class="n">SimpleMLPClassifier</span> <span class="o">=</span> <span class="n">SimpleMLPClassifier</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+                                                           <span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span>
+                                                           <span class="n">train_loader</span><span class="o">=</span><span class="n">train_loader</span><span class="p">,</span>
+                                                           <span class="n">val_loader</span><span class="o">=</span><span class="n">val_loader</span><span class="p">,</span>
+                                                           <span class="n">test_loader</span><span class="o">=</span><span class="n">test_loader</span><span class="p">,</span>
+                                                           <span class="n">train_func</span><span class="o">=</span><span class="n">train</span><span class="o">.</span><span class="n">train</span><span class="p">,</span>
+                                                           <span class="n">eval_func</span><span class="o">=</span><span class="n">evaluation</span><span class="o">.</span><span class="n">test</span><span class="p">,</span>
+                                                           <span class="p">)</span>
+
+<span class="n">MNIST_training</span><span class="o">.</span><span class="n">launch_training</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;epochs&quot;</span><span class="p">],</span> <span class="n">get_device</span><span class="p">(),</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;logdir&quot;</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;prefix&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">build_model</span></code> and <code class="docutils literal notranslate"><span class="pre">loss_name_to_class</span></code> are little interfaces between models name (in string format) given in argument and the concrete python object.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Here we use an argument parser for interpret the command line arguments, but it’s only a matter of implementation. Another solution must likely be found if you
+use a job scheduling system, such as <a class="reference external" href="https://slurm.schedmd.com/overview.html">Slurm</a> or <a class="reference external" href="https://oar.imag.fr/">OAR</a>.</p>
+</div>
+<p>For this tutorial, we set the following commands :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
+
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;--epochs&quot;</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Number of training epoch&quot;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;--loss&quot;</span><span class="p">,</span>
+    <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CrossEntropy&quot;</span><span class="p">,</span> <span class="s2">&quot;RelativeL1&quot;</span><span class="p">,</span> <span class="s2">&quot;RelativeL2&quot;</span><span class="p">],</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Choose between CrossEntropy, RelativeL1 and RelativeL2.&quot;</span><span class="p">,</span>
+    <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span>
+    <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;--model&quot;</span><span class="p">,</span>
+    <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;FC&quot;</span><span class="p">,</span> <span class="s2">&quot;FCReg&quot;</span><span class="p">],</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Choose between FC (Fully Connected) and FCReg (Regularized).&quot;</span><span class="p">,</span>
+    <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span>
+    <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;--logdir&quot;</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Where write the result of the training and save the best model&quot;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;--prefix&quot;</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Prefix of the folder where you want to save your results.&quot;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="s2">&quot;my_model&quot;</span><span class="p">,</span>
+    <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="launch-the-training">
+<h2>Launch the training<a class="headerlink" href="#launch-the-training" title="Link to this heading"></a></h2>
+<p>Your training script is now finished ! You can launch it by using a command with this shape :</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>my_project/simple_MLP_classifier.py<span class="w"> </span>--epochs<span class="w"> </span>x<span class="w"> </span>--loss<span class="w"> </span>RelativeL2<span class="w"> </span>--model<span class="w"> </span>FC<span class="w"> </span>--logdir<span class="w"> </span>logs
+</pre></div>
+</div>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="_images/example_output.png"><img alt="A terminal capture of a training." src="_images/example_output.png" style="width: 958.0px; height: 238.5px;" /></a>
+<figcaption>
+<p><span class="caption-text">Obtained with the following command :</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+<div class="legend">
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>example/fashionMNIST/simple_MLP_classifier.py<span class="w"> </span>--epochs<span class="w"> </span><span class="m">5</span>
+--loss<span class="w"> </span>RelativeL2<span class="w"> </span>--model<span class="w"> </span>FCReg<span class="w"> </span>--logdir<span class="w"> </span>logs
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+</figcaption>
+</figure>
+<p>If you want monitor your training with tensorboard, use this command for launch the board :</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tensorboard<span class="w"> </span>--logdir<span class="w"> </span>logs/my_model_x<span class="w"> </span><span class="c1">#optional --port xxxx #6006 by default</span>
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you run your training in another machine via ssh tunnel, you can use TensorBoard in local by forwarding a port of the distant machine to your local machine,
+with :</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>-L<span class="w"> </span><span class="m">6006</span>:localhost:6006<span class="w"> </span>machine_ssh_name
+</pre></div>
+</div>
+<p>Then run the tensorboard command in the distant machine and open the web page in your local web browser.</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="custom_loss.html" class="btn btn-neutral float-left" title="Custom loss" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="modules.html" class="btn btn-neutral float-right" title="Modules documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Quentin Dupré.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
