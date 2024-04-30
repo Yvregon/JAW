@@ -8,10 +8,7 @@ from jaw.utils.computation import get_device
 
 
 class ProjectNameTrainer(JAWTrainer):
-    """Typical example implementation of a JAWTrainer. We want train a mini classifier with the
-    `fashion MNIST <https://github.com/zalandoresearch/fashion-mnist>`_dataset.
-
-    Here we want be able to launch a training with our previously written classes (dataloader, models, losses, training and evaluation processes).
+    """Put here the description of your trainer.
 
     .. note::
 
