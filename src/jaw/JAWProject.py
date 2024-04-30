@@ -32,6 +32,10 @@ def generate_jaw_project(project_name: str, root_path: str):
 
     :returns: None.
     """
+
+    # Rewrite the project name in snake_case
+    project_name = project_name.replace(' ', '_').lower()
+
     shutil.copytree(os.path.dirname(__file__) + "/__template__", root_path + "/", dirs_exist_ok=True)
     prefix: str = root_path + "/" + project_name
 
