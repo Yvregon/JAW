@@ -1,5 +1,5 @@
 """
-File where to put our custom losses
+File where to put our custom models.
 """
 
 import torch.nn as nn
